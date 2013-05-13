@@ -34,10 +34,18 @@ while 1:
         if sock == server_socket:
             client, address = server_socket.accept()
             input.append(client)
+        elif sock == sys.stdin:
+            data = sock.readline()
+            for s in input:
+                if s not in (server_socket, sys.stdin):
+                    s.send(data)
         else:
             data = sock.recv(RECV_BUFFER)
             if data:
-              sys.stdout.write(data)
-              #prompt()
+                sys.stdout.write(data)
+
+
+
+
 server_socket.close()
 

@@ -35,11 +35,9 @@ while 1:
                 print '\nDisconnected from chat server'
                 sys.exit()
             else:
-                #print data
                 sys.stdout.write(data)
                 prompt()
-
-        else:
+        elif sock == sys.stdin:
             msg = sys.stdin.readline()
             s.send('\r<Client>: ' + msg)
             prompt()
