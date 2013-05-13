@@ -36,13 +36,15 @@ while 1:
             input.append(client)
         elif sock == sys.stdin:
             data = sock.readline()
+            prompt()
             for s in input:
                 if s not in (server_socket, sys.stdin):
-                    s.send(data)
+                    s.send('\r<Server> ' + data)
         else:
             data = sock.recv(RECV_BUFFER)
             if data:
                 sys.stdout.write(data)
+                prompt()
 
 
 
