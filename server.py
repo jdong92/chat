@@ -3,47 +3,46 @@ import os
 import select
 import sys
 
+def prompt():
+    sys.stdout.write('<You> ')
+    sys.stdout.flush()
+
 try:
-    listenfd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-except socket.error:
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+except:
     print 'Failed to create socket'
     sys.exit()
 
-print 'Chat Program'
-#userName = raw_input('Please enter a username: ')
-
-HOST = '127.0.0.1'
 PORT = 9050
-maxline = 4096
+HOST = '127.0.0.1'
+RECV_BUFFER = 4096
 
-listenfd.bind((HOST, PORT))
-listenfd.listen(10)
-input = [listenfd, sys.stdin]
+server_socket.bind((HOST, PORT))
+server_socket.listen(10)
 
-running = 1
+input = [server_socket, sys.stdin]
 
-while running:
+print 'Chat Program'
+prompt()
+
+while 1:
 
     inputready, outputready, exceptready = select.select(input,[],[])
-    for s in inputready:
-        if s == listenfd:
-            client, address = listenfd.accept()
+
+    for sock in inputready:
+
+        if sock == server_socket:
+            client, address = server_socket.accept()
             input.append(client)
+            #data = sock.recv(4096)
         else:
-            data = s.recv(maxline)
+            data = sock.recv(RECV_BUFFER)
             if data:
-                print data
-                #s.send(data) #Can't send back because it receive it yet
-            else:
-                s.close()
-                input.remove(s)
-            """
-            msg = sys.stdin.readline()
-            listenfd.send('Report')
-            sys.stdout.write(userName + '> ')
-            sys.stdout.flush()
-            """
+                sys.stdout.write(data)
+                prompt()
+                #s.send('<Server>: ' + msg)
 
 
-listenfd.close()
+
+server_socket.close()
 

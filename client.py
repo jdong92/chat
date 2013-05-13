@@ -3,10 +3,14 @@ import os
 import select
 import sys
 
+def prompt():
+    sys.stdout.write('<You> ')
+    sys.stdout.flush()
+
 HOST = '127.0.0.1'
 PORT = 9050
 
-print 'Chat Program'
+#print 'Chat Program'
 
 try:
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -15,6 +19,8 @@ except socket.error:
     sys.exit()
 
 s.connect((HOST, PORT))
+print 'Connected to remote host. Start sending messages'
+prompt()
 
 while 1:
 
@@ -25,21 +31,15 @@ while 1:
     for sock in read_sockets:
         if sock == s:
             data = sock.recv(4096)
-            """
             if not data:
                 print '\nDisconnected from chat server'
                 sys.exit()
             else:
                 #print data
                 sys.stdout.write(data)
-                sys.stdout.write('<You> ')
-                sys.stdout.flush()
-            """
-            if data:
-                print data
+                prompt()
 
         else:
             msg = sys.stdin.readline()
             s.send('<Client>: ' + msg)
-            sys.stdout.write('<You> ')
-            sys.stdout.flush()
+            prompt()
