@@ -41,5 +41,5 @@ while 1:
 
         else:
             msg = sys.stdin.readline()
-            s.send('<Client>: ' + msg)
+            s.send('\r<Client>: ' + msg)
             prompt()
